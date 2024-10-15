@@ -3,9 +3,10 @@ Description=Gunicorn daemon for Kittygram
 After=network.target
 
 [Service]
-User=yc-user  # Укажи своё имя пользователя
-WorkingDirectory=/home/yc-user/kittygram/backend/  # Путь к проекту Kittygram
-ExecStart=/home/yc-user/kittygram/backend/venv/bin/gunicorn --bind 0.0.0.0:8080 backend.wsgi
+User=yc-user
+Group=yc-user
+WorkingDirectory=/home/yc-user/infra_sprint1/backend
+ExecStart=/home/yc-user/infra_sprint1/backend/venv/bin/gunicorn --workers 3 --bind unix:/home/yc-user/infra_sprint1/backend/kittygram.sock kittygram_backend.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
