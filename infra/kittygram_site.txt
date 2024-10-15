@@ -1,5 +1,5 @@
 IP: 130.193.42.110;
 name_taski: https://yandextesttls.zapto.org;
 name_kittygram: https://kittygrampython.zapto.org;
-login: admin;
+login: yc-user;
 password: 12345;
