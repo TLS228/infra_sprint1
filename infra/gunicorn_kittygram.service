@@ -6,7 +6,7 @@ After=network.target
 User=yc-user
 Group=yc-user
 WorkingDirectory=/home/yc-user/infra_sprint1/backend
-ExecStart=/home/yc-user/infra_sprint1/backend/venv/bin/gunicorn --workers 3 --bind unix:/home/yc-user/infra_sprint1/backend/kittygram.sock kittygram_backend.wsgi:application
+ExecStart=/home/yc-user/infra_sprint1/backend/venv/bin/gunicorn --workers 3 --bind 0.0.0.0:8080 kittygram_backend.wsgi:application
 
 [Install]
 WantedBy=multi-user.target
