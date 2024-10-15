@@ -1,11 +1,11 @@
 [Unit]
-Description=gunicorn daemon
+Description=Gunicorn daemon for Kittygram
 After=network.target
 
 [Service]
-User=yc-user
-WorkingDirectory=/home/yc-user/taski/backend/
-ExecStart=/home/yc-user/taski/backend/venv/bin/gunicorn --bind 0.0.0.0:8000 backend.wsgi
+User=yc-user  # Укажи своё имя пользователя
+WorkingDirectory=/home/yc-user/kittygram/backend/  # Путь к проекту Kittygram
+ExecStart=/home/yc-user/kittygram/backend/venv/bin/gunicorn --bind 0.0.0.0:8080 backend.wsgi
 
 [Install]
 WantedBy=multi-user.target

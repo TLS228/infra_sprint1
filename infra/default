@@ -1,23 +1,86 @@
-server {
-    listen 80;
-    server_name yandextesttls.zapto.org;
+ server {
+    server_name 130.193.42.110 yandextesttls.zapto.org;
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
+
+    # Новый блок.
+    location /admin/ {
+        proxy_pass http://127.0.0.1:8000;
+    }
 
     location / {
-        proxy_pass http://127.0.0.1:8080;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        root   /var/www/taski;
+        index  index.html index.htm;
+        try_files $uri /index.html;
     }
 
-    location /static/ {
-        alias /var/www/kittygram/static/;
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/kittygrampython.zapto.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/kittygrampython.zapto.org/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+}
+
+server {
+    server_name 130.193.42.110 kittygrampython.zapto.org;
+
+    # Статические файлы фронтенда
+    location / {
+        root   /var/www/kittygram;
+        index  index.html index.htm;
+        try_files $uri /index.html;
     }
 
+    # Медиа-файлы (фотографии котиков)
     location /media/ {
         alias /var/www/kittygram/media/;
     }
 
-    client_max_body_size 20M;
+    # Прокси для бэкенд-запросов
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080;  # Бэкенд будет работать на порте 8080
+        client_max_body_size 20M;  # Увеличиваем лимит на размер загружаемых файлов
+    }
+
+    location /admin/ {
+        proxy_pass http://127.0.0.1:8080;
+        client_max_body_size 20M;
+    }
+
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/kittygrampython.zapto.org/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/kittygrampython.zapto.org/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
 }
 
+
+server {
+    if ($host = kittygrampython.zapto.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    server_name 130.193.42.110 kittygrampython.zapto.org;
+    return 404; # managed by Certbot
+
+
+} server {
+    if ($host = yandextesttls.zapto.org) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+
+    listen 80;
+    server_name 130.193.42.110 yandextesttls.zapto.org;
+    return 404; # managed by Certbot
+
+
+}
